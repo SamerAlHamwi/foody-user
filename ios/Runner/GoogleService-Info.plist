@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1038984004400-uvduai9k5no5fvkprk5aldapkuhdedoq.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1038984004400-uvduai9k5no5fvkprk5aldapkuhdedoq</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDB6sUXJV7JpX6sCmycQYYoPdQDab-RJ0s</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1038984004400</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.foodyman.single</string>
+	<key>PROJECT_ID</key>
+	<string>foody-customer-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>foody-customer-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1038984004400:ios:5e9fca7eccd71f96933ef5</string>
+</dict>
+</plist>
