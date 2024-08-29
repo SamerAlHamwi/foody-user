@@ -50,9 +50,7 @@ class AppRouter extends _$AppRouter {
         MaterialRoute(path: '/no-connection', page: NoConnectionRoute.page),
         MaterialRoute(path: '/login', page: LoginRoute.page),
         MaterialRoute(path: '/reset', page: ResetPasswordRoute.page),
-        MaterialRoute(
-            path: '/register-confirmation',
-            page: RegisterConfirmationRoute.page),
+        MaterialRoute(path: '/register-confirmation', page: RegisterConfirmationRoute.page),
         MaterialRoute(path: '/register', page: RegisterRoute.page),
         MaterialRoute(path: '/shop', page: ShopRoute.page),
         MaterialRoute(path: '/order', page: OrdersListRoute.page),
@@ -70,20 +68,15 @@ class AppRouter extends _$AppRouter {
         MaterialRoute(path: '/shops_banner', page: ShopsBannerRoute.page),
         MaterialRoute(path: '/shops_detail', page: ShopDetailRoute.page),
         MaterialRoute(path: '/share_referral', page: ShareReferralRoute.page),
-        MaterialRoute(
-            path: '/share_referral_faq', page: ShareReferralFaqRoute.page),
+        MaterialRoute(path: '/share_referral_faq', page: ShareReferralFaqRoute.page),
         MaterialRoute(path: '/shop_recipe_page', page: ShopRecipesRoute.page),
-        MaterialRoute(
-            path: '/recipe_details_page', page: RecipeDetailsRoute.page),
+        MaterialRoute(path: '/recipe_details_page', page: RecipeDetailsRoute.page),
         MaterialRoute(path: '/single_shop_page', page: SingleShopRoute.page),
-        MaterialRoute(
-            path: '/all_galleries_page', page: AllGalleriesRoute.page),
+        MaterialRoute(path: '/all_galleries_page', page: AllGalleriesRoute.page),
         MaterialRoute(path: '/like_page', page: LikeRoute.page),
         MaterialRoute(path: '/all_branches_page', page: AllBranchesRoute.page),
-        MaterialRoute(
-            path: '/product_list_screen', page: ProductListRoute.page),
-        MaterialRoute(
-            path: '/notification_list_page', page: NotificationListRoute.page),
+        MaterialRoute(path: '/product_list_screen', page: ProductListRoute.page),
+        MaterialRoute(path: '/notification_list_page', page: NotificationListRoute.page),
       ];
 }
 

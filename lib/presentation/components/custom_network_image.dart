@@ -12,6 +12,7 @@ class CustomNetworkImage extends StatelessWidget {
   final double width;
   final double radius;
   final Color bgColor;
+  final bool isWithBorder;
 
   const CustomNetworkImage({
     super.key,
@@ -19,6 +20,7 @@ class CustomNetworkImage extends StatelessWidget {
     required this.height,
     required this.width,
     required this.radius,
+    this.isWithBorder = false,
     this.bgColor = Style.mainBack,
   });
 
@@ -39,34 +41,48 @@ class CustomNetworkImage extends StatelessWidget {
                 ),
               ),
             )
-          : CachedNetworkImage(
-              height: height,
-              width: width,
-              imageUrl: url,
-              fit: BoxFit.cover,
-              progressIndicatorBuilder: (context, url, progress) {
-                return Container(
+          : Container(
+            height: height,
+            width: width,
+            decoration: isWithBorder ? BoxDecoration(
+              border: Border.all(
+                color: Style.yourChatBack,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(radius),
+            ) : null,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(radius),
+              child: CachedNetworkImage(
                   height: height,
                   width: width,
-                  decoration: BoxDecoration(
-                    color: Style.shimmerBase,
-                  ),
-                );
-              },
-              errorWidget: (context, url, error) {
-                return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(radius),
-                    color: bgColor,
-                  ),
-                  alignment: Alignment.center,
-                  child: const Icon(
-                    FlutterRemix.image_line,
-                    color: Style.shimmerBaseDark,
-                  ),
-                );
-              },
+                  imageUrl: url,
+                  fit: BoxFit.cover,
+                  progressIndicatorBuilder: (context, url, progress) {
+                    return Container(
+                      height: height,
+                      width: width,
+                      decoration: BoxDecoration(
+                        color: Style.shimmerBase,
+                      ),
+                    );
+                  },
+                  errorWidget: (context, url, error) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(radius),
+                        color: bgColor,
+                      ),
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        FlutterRemix.image_line,
+                        color: Style.shimmerBaseDark,
+                      ),
+                    );
+                  },
+                ),
             ),
+          ),
     );
   }
 }

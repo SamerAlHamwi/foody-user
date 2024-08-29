@@ -42,9 +42,9 @@ class _MainPageState extends State<MainPage> {
       child: const SearchPage(),
     ),
     IndexedStackChild(child: const SizedBox.shrink()),
-    IndexedStackChild(
-      child: const SingleShopPage(),
-    ),
+    // IndexedStackChild(
+    //   child: const SingleShopPage(),
+    // ),
     IndexedStackChild(child: const ProfilePage(), preload: true),
   ];
 
@@ -191,10 +191,10 @@ class _MainPageState extends State<MainPage> {
                           )
                       ]),
                       activeIcon: const Icon(FlutterRemix.shopping_bag_3_line)),
-                  const BottomNavigationBarItem(
-                      label: "",
-                      icon: Icon(FlutterRemix.store_2_line),
-                      activeIcon: Icon(FlutterRemix.store_2_fill)),
+                  // const BottomNavigationBarItem(
+                  //     label: "",
+                  //     icon: Icon(FlutterRemix.store_2_line),
+                  //     activeIcon: Icon(FlutterRemix.store_2_fill)),
                   const BottomNavigationBarItem(
                       label: "",
                       icon: Icon(FlutterRemix.user_3_line),

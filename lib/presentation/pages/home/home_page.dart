@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -24,6 +26,8 @@ import 'package:riverpodtemp/presentation/routes/app_router.dart';
 import 'package:riverpodtemp/presentation/theme/theme.dart';
 import 'package:upgrader/upgrader.dart';
 import '../../../infrastructure/models/data/local_cart_model.dart';
+import '../../../infrastructure/models/data/shop_data.dart';
+import '../../components/custom_network_image.dart';
 import '../../components/title_icon.dart';
 import 'product_by_category.dart';
 import 'shimmer/banner_shimmer.dart';
@@ -48,6 +52,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   late RefreshController _categoryController;
   late RefreshController _storyController;
   late RefreshController _popularController;
+  late RefreshController _restaurantController;
 
   @override
   void initState() {
@@ -56,6 +61,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     _categoryController = RefreshController();
     _storyController = RefreshController();
     _popularController = RefreshController();
+    _restaurantController = RefreshController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(homeProvider.notifier)
         ..fetchBranches(context, false)
@@ -311,174 +317,324 @@ class _HomePageState extends ConsumerState<HomePage> {
                   )
                 : const SizedBox.shrink(),
             16.verticalSpace,
-            state.productsPopular.isNotEmpty
-                ? Column(
-                    children: [
-                      TitleAndIcon(
-                        title:
-                            "${AppHelpers.getTranslation(TrKeys.popular)} ${AppHelpers.getTranslation(TrKeys.products)}",
-                      ),
-                      16.verticalSpace,
-                      SizedBox(
-                        height: 250.h,
-                        child: SmartRefresher(
-                          controller: _popularController,
-                          scrollDirection: Axis.horizontal,
-                          enablePullDown: false,
-                          enablePullUp: true,
-                          primary: false,
-                          onLoading: () async {
-                            await event.fetchProductsPopularPage(
-                                context, _popularController);
-                          },
-                          child: AnimationLimiter(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              primary: false,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: state.productsPopular.length,
-                              padding: EdgeInsets.only(left: 16.w),
-                              itemBuilder: (context, index) =>
-                                  AnimationConfiguration.staggeredList(
-                                position: index,
-                                duration: const Duration(milliseconds: 375),
-                                child: SlideAnimation(
-                                  verticalOffset: 50.0,
-                                  child: FadeInAnimation(
-                                    child: GestureDetector(
-                                      onTap: () {
 
-                                        AppHelpers.showCustomModalBottomDragSheet(
-                                          paddingTop: MediaQuery.of(context)
-                                              .padding
-                                              .top +
-                                              100.h,
-                                          context: context,
-                                          modal: (c) => ProductScreen(
-                                            data: state.productsPopular[index],
-                                            controller: c,
-                                          ),
-                                          isDarkMode: false,
-                                          isDrag: true,
-                                          radius: 16,
-                                        );
-                                      },
-                                      child: SizedBox(
-                                        width: 180.r,
-                                        child: ShopProductItem(
-                                          product: state.productsPopular[index],
-                                          count: LocalStorage.instance
-                                              .getCartLocal()
-                                              .firstWhere(
-                                                  (element) =>
-                                                      element.stockId ==
-                                                      (state
-                                                          .productsPopular[
-                                                              index]
-                                                          .stock
-                                                          ?.id), orElse: () {
-                                            return CartLocalModel(
-                                                count: 0, stockId: 0);
-                                          }).count,
-                                          isAdd: (LocalStorage.instance
-                                              .getCartLocal()
-                                              .map((item) => item.stockId)
-                                              .contains(state
-                                                  .productsPopular[index]
-                                                  .stock
-                                                  ?.id)),
-                                          addCount: () {
-                                            ref
-                                                .read(
-                                                    shopOrderProvider.notifier)
-                                                .addCount(
-                                                  context: context,
-                                                  localIndex: LocalStorage
-                                                      .instance
-                                                      .getCartLocal()
-                                                      .findIndex(state
-                                                          .productsPopular[
-                                                              index]
-                                                          .stock
-                                                          ?.id),
-                                                );
-                                          },
-                                          removeCount: () {
-                                            ref
-                                                .read(
-                                                    shopOrderProvider.notifier)
-                                                .removeCount(
-                                                  context: context,
-                                                  localIndex: LocalStorage
-                                                      .instance
-                                                      .getCartLocal()
-                                                      .findIndex(state
-                                                          .productsPopular[
-                                                              index]
-                                                          .stock
-                                                          ?.id),
-                                                );
-                                          },
-                                          addCart: () {
-                                            if (LocalStorage.instance
-                                                .getToken()
-                                                .isNotEmpty) {
-                                              ref
-                                                  .read(shopOrderProvider
-                                                      .notifier)
-                                                  .addCart(
-                                                      context,
-                                                      state.productsPopular[
-                                                          index]);
-                                              ref
-                                                  .read(
-                                                      productProvider.notifier)
-                                                  .createCart(
-                                                      context,
-                                                      state
-                                                              .productsPopular[
-                                                                  index]
-                                                              .shopId ??
-                                                          0, () {
-                                                ref
-                                                    .read(shopOrderProvider
-                                                        .notifier)
-                                                    .getCart(context, () {});
-                                              },
-                                                      product:
-                                                          state.productsPopular[
-                                                              index]);
-                                            } else {
-                                              context.pushRoute(
-                                                  const LoginRoute());
-                                            }
-                                          },
+            !state.isBranchesLoading ?
+            Column(
+              children: [
+                TitleAndIcon(
+                  title:
+                  AppHelpers.getTranslation(TrKeys.popular),
+                ),
+                Container(
+                  height: state.branches!.isNotEmpty ? 230 : 0,
+                  margin: EdgeInsets.only(bottom: state.categories.isNotEmpty ? 26.h : 0),
+                  child: SmartRefresher(
+                    scrollDirection: Axis.horizontal,
+                    enablePullDown: false,
+                    enablePullUp: true,
+                    primary: false,
+                    controller: _restaurantController,
+                    onLoading: () async {
+                      // await event.fetchCategoriesPage(context, _restaurantController);
+                    },
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      primary: false,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.branches!.length,
+                      itemBuilder: (context, index) {
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 375),
+                          child: SlideAnimation(
+                            verticalOffset: 50.0,
+                            child: FadeInAnimation(
+                              child: InkWell(
+                                onTap: (){
+                                  // context.router.push(ShopRoute(shopId: state.branches![index].id!));
+                                  // context.router.push(SingleShopRoute());
+                                },
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width / 1.2,
+                                  child: Container(
+                                    // padding: const EdgeInsets.all(8),
+                                    margin: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Style.white,
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Stack(
+                                          clipBehavior: Clip.none,
+                                          alignment: Alignment.bottomRight,
+                                          children: [
+                                            CustomNetworkImage(
+                                              url: state.branches![index].backgroundImg ?? '',
+                                              height: 120,
+                                              width: MediaQuery.of(context).size.width / 1.2,
+                                              radius: 8.r,
+                                            ),
+                                            Positioned(
+                                              bottom: -30,
+                                              right: 16,
+                                              child: Stack(
+                                                clipBehavior: Clip.none,
+                                                alignment: Alignment.bottomRight,
+                                                children: [
+                                                  CustomNetworkImage(
+                                                    url: state.branches![index].logoImg ?? '',
+                                                    height: 60,
+                                                    width: 60,
+                                                    radius: 50.r,
+                                                    isWithBorder: true,
+                                                  ),
+                                                  Positioned(
+                                                    bottom: -1,
+                                                    right: 5,
+                                                    child: Container(
+                                                      width: 14,
+                                                      height: 14,
+                                                      decoration: BoxDecoration(
+                                                        color: Style.brandGreen,
+                                                        borderRadius: BorderRadius.circular(50.r)
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
+                                        6.verticalSpace,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 4),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                width: MediaQuery.of(context).size.width / 1.7,
+                                                child: Text(
+                                                  state.branches![index].translation?.title ??
+                                                      "",
+                                                  style: Style.interNormal(
+                                                    size: 18,
+                                                    color: Style.black,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              Text(
+                                                state.branches![index].type ?? '',
+                                                style: Style.interNormal(
+                                                  size: 12,
+                                                  color: Style.textGrey,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              6.verticalSpace,
+                                              Text(
+                                                'Dessert',
+                                                style: Style.interNormal(
+                                                  size: 14,
+                                                  color: Style.brandGreen,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            )
+                : const SizedBox(),
+
+            16.verticalSpace,
+
+            state.productsPopular.isNotEmpty
+                ? Column(
+              children: [
+                TitleAndIcon(
+                  title:
+                  "${AppHelpers.getTranslation(TrKeys.popular)} ${AppHelpers.getTranslation(TrKeys.products)}",
+                ),
+                16.verticalSpace,
+                SizedBox(
+                  height: 250.h,
+                  child: SmartRefresher(
+                    controller: _popularController,
+                    scrollDirection: Axis.horizontal,
+                    enablePullDown: false,
+                    enablePullUp: true,
+                    primary: false,
+                    onLoading: () async {
+                      await event.fetchProductsPopularPage(
+                          context, _popularController);
+                    },
+                    child: AnimationLimiter(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        primary: false,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: state.productsPopular.length,
+                        padding: EdgeInsets.only(left: 16.w),
+                        itemBuilder: (context, index) =>
+                            AnimationConfiguration.staggeredList(
+                              position: index,
+                              duration: const Duration(milliseconds: 375),
+                              child: SlideAnimation(
+                                verticalOffset: 50.0,
+                                child: FadeInAnimation(
+                                  child: GestureDetector(
+                                    onTap: () {
+
+                                      AppHelpers.showCustomModalBottomDragSheet(
+                                        paddingTop: MediaQuery.of(context)
+                                            .padding
+                                            .top +
+                                            100.h,
+                                        context: context,
+                                        modal: (c) => ProductScreen(
+                                          data: state.productsPopular[index],
+                                          controller: c,
+                                        ),
+                                        isDarkMode: false,
+                                        isDrag: true,
+                                        radius: 16,
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: 180.r,
+                                      child: ShopProductItem(
+                                        product: state.productsPopular[index],
+                                        count: LocalStorage.instance
+                                            .getCartLocal()
+                                            .firstWhere(
+                                                (element) =>
+                                            element.stockId ==
+                                                (state
+                                                    .productsPopular[
+                                                index]
+                                                    .stock
+                                                    ?.id), orElse: () {
+                                          return CartLocalModel(
+                                              count: 0, stockId: 0);
+                                        }).count,
+                                        isAdd: (LocalStorage.instance
+                                            .getCartLocal()
+                                            .map((item) => item.stockId)
+                                            .contains(state
+                                            .productsPopular[index]
+                                            .stock
+                                            ?.id)),
+                                        addCount: () {
+                                          ref
+                                              .read(
+                                              shopOrderProvider.notifier)
+                                              .addCount(
+                                            context: context,
+                                            localIndex: LocalStorage
+                                                .instance
+                                                .getCartLocal()
+                                                .findIndex(state
+                                                .productsPopular[
+                                            index]
+                                                .stock
+                                                ?.id),
+                                          );
+                                        },
+                                        removeCount: () {
+                                          ref
+                                              .read(
+                                              shopOrderProvider.notifier)
+                                              .removeCount(
+                                            context: context,
+                                            localIndex: LocalStorage
+                                                .instance
+                                                .getCartLocal()
+                                                .findIndex(state
+                                                .productsPopular[
+                                            index]
+                                                .stock
+                                                ?.id),
+                                          );
+                                        },
+                                        addCart: () {
+                                          if (LocalStorage.instance
+                                              .getToken()
+                                              .isNotEmpty) {
+                                            ref
+                                                .read(shopOrderProvider
+                                                .notifier)
+                                                .addCart(
+                                                context,
+                                                state.productsPopular[
+                                                index]);
+                                            ref
+                                                .read(
+                                                productProvider.notifier)
+                                                .createCart(
+                                                context,
+                                                state
+                                                    .productsPopular[
+                                                index]
+                                                    .shopId ??
+                                                    0, () {
+                                              ref
+                                                  .read(shopOrderProvider
+                                                  .notifier)
+                                                  .getCart(context, () {});
+                                            },
+                                                product:
+                                                state.productsPopular[
+                                                index]);
+                                          } else {
+                                            context.pushRoute(
+                                                const LoginRoute());
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                       ),
-                    ],
-                  )
+                    ),
+                  ),
+                ),
+              ],
+            )
                 : const SizedBox.shrink(),
-            ListView.builder(
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: state.allProducts.length,
-              itemBuilder: (context, index) {
-                return ProductByCategory(
-                  categoryId: state.allProducts[index].id ?? 0,
-                  title: state.allProducts[index].translation?.title ?? "",
-                  listOfProduct: state.allProducts[index].products ?? [],
-                );
-              },
-            ),
+
+            // ListView.builder(
+            //   padding: EdgeInsets.zero,
+            //   physics: const NeverScrollableScrollPhysics(),
+            //   shrinkWrap: true,
+            //   itemCount: state.allProducts.length,
+            //   itemBuilder: (context, index) {
+            //     return ProductByCategory(
+            //       categoryId: state.allProducts[index].id ?? 0,
+            //       title: state.allProducts[index].translation?.title ?? "",
+            //       listOfProduct: state.allProducts[index].products ?? [],
+            //     );
+            //   },
+            // ),
           ],
         ),
       ],

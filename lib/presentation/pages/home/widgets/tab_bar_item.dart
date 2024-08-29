@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:riverpodtemp/presentation/components/custom_network_image.dart';
@@ -21,36 +22,45 @@ class CategoryBarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(left: index == 1 ? 4.r : 0, right: 8.r),
-        width: 84.w,
-        height: 84.h,
+        margin: EdgeInsets.only(bottom: 8.h,left: 4.w,right: 4.w),
+        width: 1.sw/4.8,
+        height: 1.sw/4.8,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10.r)),
-            color: isActive ? Style.brandGreen : Style.white),
+            color: isActive ? Style.brandGreen : null),
         child: InkWell(
           onTap: onTap,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomNetworkImage(
-                url: image,
-                height: 48.r,
-                width: 48.r,
-                radius: 0,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 6.w),
-                child: Text(
-                  title,
-                  style: Style.interNormal(
-                    size: 12,
-                    color: Style.black,
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  CustomNetworkImage(
+                    url: image,
+                    height: 1.sw/4.8,
+                    width: 1.sw/4.8,
+                    radius: 8.r,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
+                  Container(
+                    height: 1.sw/4.8,
+                    width: 1.sw/4.8,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                        color: Style.black.withOpacity(0.3)),
+                  ),
+                  Text(
+                    title,
+                    style: Style.interNormal(
+                      size: 13,
+                      color: Style.white,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ],
           ),

@@ -13,7 +13,7 @@ class ProductRequest {
     this.deals,
     this.price,
     this.orderBy,
-    required this.shopId,
+    this.shopId,
     required this.page,
     this.categoryId,
   });
@@ -25,9 +25,9 @@ class ProductRequest {
       map["currency_id"] = LocalStorage.instance.getSelectedCurrency().id;
     }
     map["productPerPage"] = 4;
-    if(LocalStorage.instance.getShopId() != 0){
-      map["shop_id"] = LocalStorage.instance.getShopId();
-    }
+    // if(LocalStorage.instance.getShopId() != 0){
+    //   map["shop_id"] = LocalStorage.instance.getShopId();
+    // }
 
     map["status"] = "published";
     if (deals != null && (deals ?? false)) {
