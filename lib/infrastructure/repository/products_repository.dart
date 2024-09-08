@@ -140,7 +140,7 @@ class ProductsRepository implements ProductsRepositoryFacade {
     int? shopId,
     required int page,
   }) async {
-    final data = ProductRequest(page: page); //shopId: shopId!,
+    final data = ProductRequest(page: page,shopId: shopId!,); //
     try {
       final client = inject<HttpService>().client(requireAuth: false);
       final response = await client.get(

@@ -351,7 +351,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: FadeInAnimation(
                               child: InkWell(
                                 onTap: (){
-                                  // context.router.push(ShopRoute(shopId: state.branches![index].id!));
+                                  context.router.push(ShopRoute(shopId: state.branches![index].id!));
                                   // context.router.push(SingleShopRoute());
                                 },
                                 child: SizedBox(

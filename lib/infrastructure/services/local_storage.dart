@@ -86,8 +86,8 @@ class LocalStorage {
     }
   }
 
-  // int getShopId() => _preferences?.getInt(AppConstants.keyShopId) ?? 0;
-  int getShopId() => 0;
+  int getShopId() => _preferences?.getInt(AppConstants.keyShopId) ?? 0;
+  // int getShopId() => 0;
 
   void deleteShopId() => _preferences?.remove(AppConstants.keyShopId);
 

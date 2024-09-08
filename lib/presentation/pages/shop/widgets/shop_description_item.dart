@@ -11,7 +11,7 @@ class ShopDescriptionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Container(
-      height: 98.h,
+      height: 100.h,
       decoration: BoxDecoration(
           color: Style.white,
           borderRadius: BorderRadius.all(Radius.circular(10.r))),

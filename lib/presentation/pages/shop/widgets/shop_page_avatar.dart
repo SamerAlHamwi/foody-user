@@ -6,6 +6,7 @@ import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 import 'package:riverpodtemp/application/shop/shop_provider.dart';
 import 'package:riverpodtemp/application/shop_order/shop_order_provider.dart';
 import 'package:riverpodtemp/infrastructure/models/data/shop_data.dart';
@@ -26,12 +27,13 @@ import 'bonus_screen.dart';
 import 'shop_description_item.dart';
 import 'package:intl/intl.dart' as intl;
 
-class ShopPageAvatar extends StatelessWidget {
+class ShopPageAvatar extends StatefulWidget {
   final ShopData shop;
   final String workTime;
   final bool isLike;
   final VoidCallback onShare;
   final VoidCallback onLike;
+  final VoidCallback onChange;
   final BonusModel? bonus;
 
   const ShopPageAvatar(
@@ -41,7 +43,20 @@ class ShopPageAvatar extends StatelessWidget {
       required this.workTime,
       required this.isLike,
       required this.onShare,
-      required this.bonus});
+      required this.bonus,
+      required this.onChange
+      });
+
+  @override
+  State<ShopPageAvatar> createState() => _ShopPageAvatarState();
+}
+
+class _ShopPageAvatarState extends State<ShopPageAvatar> {
+  int selectedIndex = 0;
+
+  List<String> labels = [
+    'Products', 'Shop info',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -55,14 +70,14 @@ class ShopPageAvatar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                shop.translation?.title ?? "",
+                widget.shop.translation?.title ?? "",
                 style: Style.interSemi(
                   size: 22,
                   color: Style.black,
                 ),
               ),
               Text(
-                shop.translation?.description ?? "",
+                widget.shop.translation?.description ?? "",
                 style: Style.interNormal(
                   size: 13,
                   color: Style.black,
@@ -76,7 +91,7 @@ class ShopPageAvatar extends StatelessWidget {
                   SvgPicture.asset("assets/svgs/star.svg"),
                   4.horizontalSpace,
                   Text(
-                    (shop.avgRate ?? ""),
+                    (widget.shop.avgRate ?? ""),
                     style: Style.interNormal(
                       size: 12.sp,
                       color: Style.black,
@@ -85,9 +100,9 @@ class ShopPageAvatar extends StatelessWidget {
                   8.horizontalSpace,
                   BonusDiscountPopular(
                     isSingleShop: true,
-                    isPopular: shop.isRecommend ?? false,
-                    bonus: shop.bonus,
-                    isDiscount: shop.isDiscount ?? false,
+                    isPopular: widget.shop.isRecommend ?? false,
+                    bonus: widget.shop.bonus,
+                    isDiscount: widget.shop.isDiscount ?? false,
                   ),
                 ],
               ),
@@ -97,13 +112,13 @@ class ShopPageAvatar extends StatelessWidget {
                 children: [
                   ShopDescriptionItem(
                     title: AppHelpers.getTranslation(TrKeys.workingHours),
-                    description: workTime,
+                    description: widget.workTime,
                     icon: const Icon(FlutterRemix.time_fill),
                   ),
                   ShopDescriptionItem(
                     title: AppHelpers.getTranslation(TrKeys.deliveryTime),
                     description:
-                        "${shop.deliveryTime?.from ?? 0} - ${shop.deliveryTime?.to ?? 0} ${shop.deliveryTime?.type ?? "min"}",
+                        "${widget.shop.deliveryTime?.from ?? 0} - ${widget.shop.deliveryTime?.to ?? 0} ${widget.shop.deliveryTime?.type ?? "min"}",
                     icon: SvgPicture.asset("assets/svgs/delivery.svg"),
                   ),
                   ShopDescriptionItem(
@@ -112,7 +127,7 @@ class ShopPageAvatar extends StatelessWidget {
                         "${AppHelpers.getTranslation(TrKeys.from)} ${intl.NumberFormat.currency(
                       symbol:
                           LocalStorage.instance.getSelectedCurrency().symbol,
-                    ).format(shop.deliveryRange ?? 0)}",
+                    ).format(widget.shop.deliveryRange ?? 0)}",
                     icon: SvgPicture.asset(
                       "assets/svgs/ticket.svg",
                       width: 18.r,
@@ -121,7 +136,7 @@ class ShopPageAvatar extends StatelessWidget {
                   ),
                 ],
               ),
-              AppHelpers.getTranslation(TrKeys.close) == workTime
+              AppHelpers.getTranslation(TrKeys.close) == widget.workTime
                   ? Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Container(
@@ -156,7 +171,38 @@ class ShopPageAvatar extends StatelessWidget {
                       ),
                     )
                   : const SizedBox.shrink(),
-              bonus != null ? _bonusButton(context) : const SizedBox.shrink(),
+              widget.bonus != null ? _bonusButton(context) : const SizedBox.shrink(),
+              12.verticalSpace,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 35,
+                    child: FlutterToggleTab(
+                      width: 80.w,
+                      borderRadius: 30,
+                      height: 40,
+                      selectedIndex: selectedIndex,
+                      selectedBackgroundColors: const [Style.brandGreen],
+                      unSelectedBackgroundColors: const [Style.textGrey],
+                      selectedTextStyle: Style.interNormal().copyWith(
+                        color: Style.white,
+                      ),
+                      unSelectedTextStyle: Style.interNormal().copyWith(
+                        color: Style.white,
+                      ),
+                      labels: labels,
+                      selectedLabelIndex: (index) async {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                        widget.onChange();
+                      },
+                      isScroll:false,
+                    ),
+                  ),
+                ],
+              ),
               12.verticalSpace,
               // groupOrderButton(context),
             ],
@@ -201,7 +247,7 @@ class ShopPageAvatar extends StatelessWidget {
                             .then((value) async {
                           ref.read(shopOrderProvider.notifier).createCart(
                                 context,
-                                (shop.id ?? 0),
+                                (widget.shop.id ?? 0),
                               );
                         });
                       });
@@ -230,7 +276,7 @@ class ShopPageAvatar extends StatelessWidget {
         }
       });
       bool isStartOrder = (ref.watch(shopOrderProvider).cart?.group ?? false) &&
-          (ref.watch(shopOrderProvider).cart?.shopId == shop.id);
+          (ref.watch(shopOrderProvider).cart?.shopId == widget.shop.id);
       return CustomButton(
         isLoading: ref.watch(shopOrderProvider).isStartGroupLoading ||
             ref.watch(shopOrderProvider).isCheckShopOrder,
@@ -251,7 +297,7 @@ class ShopPageAvatar extends StatelessWidget {
             !isStartOrder
                 ? ref.read(shopOrderProvider.notifier).createCart(
                       context,
-                      shop.id ?? 0,
+                      widget.shop.id ?? 0,
                     )
                 : AppHelpers.showCustomModalBottomSheet(
                     paddingTop: MediaQuery.of(context).padding.top + 160.h,
@@ -277,7 +323,7 @@ class ShopPageAvatar extends StatelessWidget {
           width: double.infinity,
           color: Style.mainBack,
           child: CustomNetworkImage(
-            url: shop.backgroundImg ?? "",
+            url: widget.shop.backgroundImg ?? "",
             height: 180.h + MediaQuery.of(context).padding.top,
             width: double.infinity,
             radius: 0,
@@ -290,7 +336,7 @@ class ShopPageAvatar extends StatelessWidget {
               right: 16.w),
           child: ShopAvatar(
             radius: 20,
-            shopImage: shop.logoImg ?? "",
+            shopImage: widget.shop.logoImg ?? "",
             size: 70,
             padding: 6,
             bgColor: Style.white.withOpacity(0.65),
@@ -346,7 +392,7 @@ class ShopPageAvatar extends StatelessWidget {
               paddingTop: MediaQuery.of(context).padding.top,
               context: context,
               modal: BonusScreen(
-                bonus: bonus,
+                bonus: widget.bonus,
               ),
               isDarkMode: false,
               isDrag: true,
@@ -376,14 +422,14 @@ class ShopPageAvatar extends StatelessWidget {
                 8.horizontalSpace,
                 Expanded(
                   child: Text(
-                    bonus != null
-                        ? ((bonus?.type ?? "sum") == "sum")
+                    widget.bonus != null
+                        ? ((widget.bonus?.type ?? "sum") == "sum")
                             ? "${AppHelpers.getTranslation(TrKeys.under)} ${intl.NumberFormat.currency(
                                 symbol: LocalStorage.instance
                                     .getSelectedCurrency()
                                     .symbol,
-                              ).format(bonus?.value ?? 0)} + ${bonus?.bonusStock?.product?.translation?.title ?? ""}"
-                            : "${AppHelpers.getTranslation(TrKeys.under)} ${bonus?.value ?? 0} + ${bonus?.bonusStock?.product?.translation?.title ?? ""}"
+                              ).format(widget.bonus?.value ?? 0)} + ${widget.bonus?.bonusStock?.product?.translation?.title ?? ""}"
+                            : "${AppHelpers.getTranslation(TrKeys.under)} ${widget.bonus?.value ?? 0} + ${widget.bonus?.bonusStock?.product?.translation?.title ?? ""}"
                         : "",
                     style: Style.interNormal(
                       size: 14,

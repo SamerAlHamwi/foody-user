@@ -20,10 +20,14 @@ import 'package:riverpodtemp/presentation/pages/shop/shop_products_screen.dart';
 import 'package:riverpodtemp/presentation/theme/theme.dart';
 
 import '../../../../application/shop/shop_provider.dart';
+import '../../../application/main/main_provider.dart';
 import '../../../application/shop_order/shop_order_provider.dart';
 import '../../../infrastructure/services/local_storage.dart';
 
 import '../../components/buttons/animation_button_effect.dart';
+import '../single_shop/widgets/info_screen.dart';
+import '../single_shop/widgets/order_food.dart';
+import '../single_shop/widgets/review_screen.dart';
 import 'cart/cart_order_page.dart';
 import 'package:intl/intl.dart' as intl;
 import 'widgets/shop_page_avatar.dart';
@@ -49,6 +53,8 @@ class _ShopPageState extends ConsumerState<ShopPage>
     with TickerProviderStateMixin {
   late ShopNotifier event;
   late LikeNotifier eventLike;
+  bool isProducts = true;
+
 
   @override
   void initState() {
@@ -63,6 +69,7 @@ class _ShopPageState extends ConsumerState<ShopPage>
       ref.read(shopProvider.notifier)
         ..checkProductsPopular(context, widget.shopId)
         ..fetchCategory(context, widget.shopId)
+        ..fetchShopMain(context)
         ..changeIndex(0);
       if (LocalStorage.instance.getToken().isNotEmpty) {
         ref.read(shopOrderProvider.notifier).getCart(context, () {});
@@ -110,7 +117,7 @@ class _ShopPageState extends ConsumerState<ShopPage>
                     SliverAppBar(
                       backgroundColor: Style.white,
                       automaticallyImplyLeading: false,
-                      toolbarHeight: (480.r +
+                      toolbarHeight: (440.r +
                           MediaQuery.of(context).padding.top +
                           (state.shopData?.bonus == null ? 0 : 46.r) +
                           (state.endTodayTime.hour > TimeOfDay.now().hour
@@ -127,6 +134,11 @@ class _ShopPageState extends ConsumerState<ShopPage>
                             event.onLike();
                             eventLike.fetchLikeProducts(context);
                           },
+                          onChange: (){
+                            setState(() {
+                              isProducts = !isProducts;
+                            });
+                          },
                           isLike: state.isLike,
                           shop: state.shopData ?? ShopData(),
                           onShare: event.onShare,
@@ -136,14 +148,47 @@ class _ShopPageState extends ConsumerState<ShopPage>
                     ),
                   ];
                 },
-                body: state.isCategoryLoading || state.isPopularLoading
+                body: isProducts ?
+                state.isCategoryLoading || state.isPopularLoading
                     ? const Loading()
                     : ShopProductsScreen(
                         isPopularProduct: state.isPopularProduct,
                         listCategory: state.category,
                         currentIndex: state.currentIndex,
                         shopId: widget.shopId,
-                      ),
+                      ) : state.isLoading
+                    ? Padding(
+                  padding: EdgeInsets.only(top: 64.r),
+                  child: const Loading(),
+                )
+                    : SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 48.r),
+                    child: Column(
+                      children: [
+                        10.verticalSpace,
+                        InfoScreen(
+                            shop: state.shopData,
+                            endTodayTime: state.endTodayTime,
+                            startTodayTime: state.startTodayTime,
+                            shopMarker: state.shopMarkers),
+                        20.verticalSpace,
+                        OrderFoodScreen(
+                          shop: state.shopData,
+                          startOrder: () {
+                            ref.read(mainProvider.notifier).selectIndex(0);
+                          },
+                        ),
+                        20.verticalSpace,
+                        ReviewScreen(
+                          shop: state.shopData,
+                          review: state.reviews,
+                          reviewCount: state.reviewCount,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Padding(

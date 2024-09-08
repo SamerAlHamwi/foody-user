@@ -33,7 +33,7 @@ class AppAssets {
   static const String pngLogoPaypal = '$_pngPath/logo_paypal.png';
   static const String pngIcStorePin = '$_pngPath/ic_store_pin.png';
   static const String pngNoSearchResult = '$_pngPath/no_search_result.png';
-  static const String pngAppIcon = '$_pngPath/app_logo.png';
+  static const String pngAppIcon = '$_pngPath/ghozlan_logo.png';
   static const String pngSaleBanner = '$_pngPath/sale_banner.png';
   static const String pngLookMobile = '$_pngPath/look_mobile.png';
 

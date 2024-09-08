@@ -97,6 +97,9 @@ class _SingleShopPageState extends ConsumerState<SingleShopPage> {
                                 event.onLike();
                                 eventLike.fetchLikeProducts(context);
                               },
+                              onChange: (){
+
+                              },
                               isLike: state.isLike,
                               shop: state.shopData ?? ShopData(),
                               onShare: event.onShare,
