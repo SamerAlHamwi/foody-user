@@ -6,6 +6,8 @@ import 'package:riverpodtemp/presentation/routes/app_router.dart';
 import '../../../../application/splash/splash_provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
+import '../../../../infrastructure/services/local_storage.dart';
+
 @RoutePage()
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
@@ -21,6 +23,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      LocalStorage.instance.setShopId(501);
       ref.read(splashProvider.notifier).getToken(
         context,
         goMain: () {

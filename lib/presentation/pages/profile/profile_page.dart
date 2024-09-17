@@ -171,19 +171,19 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                             top: 24.h, right: 16.w, left: 16.w, bottom: 24.h),
                         child: Column(
                           children: [
-                            ProfileItem(
-                              isLtr: isLtr,
-                              title:
-                                  "${AppHelpers.getTranslation(TrKeys.wallet)}: ${intl.NumberFormat.currency(
-                                symbol: LocalStorage.instance
-                                    .getSelectedCurrency()
-                                    .symbol,
-                              ).format(state.userData?.wallet?.price ?? 0)}",
-                              icon: FlutterRemix.wallet_3_line,
-                              onTap: () {
-                                context.pushRoute(const WalletHistoryRoute());
-                              },
-                            ),
+                            // ProfileItem(
+                            //   isLtr: isLtr,
+                            //   title:
+                            //       "${AppHelpers.getTranslation(TrKeys.wallet)}: ${intl.NumberFormat.currency(
+                            //     symbol: LocalStorage.instance
+                            //         .getSelectedCurrency()
+                            //         .symbol,
+                            //   ).format(state.userData?.wallet?.price ?? 0)}",
+                            //   icon: FlutterRemix.wallet_3_line,
+                            //   onTap: () {
+                            //     context.pushRoute(const WalletHistoryRoute());
+                            //   },
+                            // ),
                             AppHelpers.getReferralActive()
                                 ? ProfileItem(
                                     isLtr: isLtr,
@@ -224,26 +224,27 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                                     .pushRoute(const NotificationListRoute());
                               },
                             ),
-                            ProfileItem(
-                              isLtr: isLtr,
-                              title:
-                                  AppHelpers.getTranslation(TrKeys.reservation),
-                              icon: FlutterRemix.reserved_line,
-                              onTap: () async {
-                                await launch(
-                                  "${AppConstants.webUrl}/reservations/${LocalStorage.instance.getShopId()}?guests=2&date_from=${intl.DateFormat("yyyy-MM-dd").format(DateTime.now())}",
-                                  enableJavaScript: true,
-                                );
-                              },
-                            ),
-                            ProfileItem(
-                              isLtr: isLtr,
-                              title: AppHelpers.getTranslation(TrKeys.branches),
-                              icon: FlutterRemix.store_2_fill,
-                              onTap: () {
-                                context.pushRoute(const AllBranchesRoute());
-                              },
-                            ),
+                            // ProfileItem(
+                            //   isLtr: isLtr,
+                            //   title:
+                            //       AppHelpers.getTranslation(TrKeys.reservation),
+                            //   icon: FlutterRemix.reserved_line,
+                            //   onTap: () async {
+                            //     await launch(
+                            //       "${AppConstants.webUrl}/reservations/${LocalStorage.instance.getShopId()}?guests=2&date_from=${intl.DateFormat("yyyy-MM-dd").format(DateTime.now())}",
+                            //       enableJavaScript: true,
+                            //     );
+                            //   },
+                            // ),
+
+                            // ProfileItem(
+                            //   isLtr: isLtr,
+                            //   title: AppHelpers.getTranslation(TrKeys.branches),
+                            //   icon: FlutterRemix.store_2_fill,
+                            //   onTap: () {
+                            //     context.pushRoute(const AllBranchesRoute());
+                            //   },
+                            // ),
                             ProfileItem(
                               isLtr: isLtr,
                               title: AppHelpers.getTranslation(
@@ -327,28 +328,29 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                                 );
                               },
                             ),
-                            ProfileItem(
-                              isLtr: isLtr,
-                              title: AppHelpers.getTranslation(TrKeys.careers),
-                              icon: FlutterRemix.empathize_line,
-                              onTap: () async {
-                                await launch(
-                                  "${AppConstants.webUrl}/careers",
-                                  enableJavaScript: true,
-                                );
-                              },
-                            ),
-                            ProfileItem(
-                              isLtr: isLtr,
-                              title: AppHelpers.getTranslation(TrKeys.blogs),
-                              icon: FlutterRemix.article_line,
-                              onTap: () async {
-                                await launch(
-                                  "${AppConstants.webUrl}/blog",
-                                  enableJavaScript: true,
-                                );
-                              },
-                            ),
+                            // ProfileItem(
+                            //   isLtr: isLtr,
+                            //   title: AppHelpers.getTranslation(TrKeys.careers),
+                            //   icon: FlutterRemix.empathize_line,
+                            //   onTap: () async {
+                            //     await launch(
+                            //       "${AppConstants.webUrl}/careers",
+                            //       enableJavaScript: true,
+                            //     );
+                            //   },
+                            // ),
+
+                            // ProfileItem(
+                            //   isLtr: isLtr,
+                            //   title: AppHelpers.getTranslation(TrKeys.blogs),
+                            //   icon: FlutterRemix.article_line,
+                            //   onTap: () async {
+                            //     await launch(
+                            //       "${AppConstants.webUrl}/blog",
+                            //       enableJavaScript: true,
+                            //     );
+                            //   },
+                            // ),
                             ProfileItem(
                               isLtr: isLtr,
                               title: AppHelpers.getTranslation(

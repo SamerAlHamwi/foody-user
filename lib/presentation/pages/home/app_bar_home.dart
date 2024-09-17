@@ -2,6 +2,7 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -32,7 +33,7 @@ class AppBarHome extends StatelessWidget {
     return CommonAppBar(
         child: Row(
       crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         InkWell(
           onTap: () async {
@@ -79,6 +80,17 @@ class AppBarHome extends StatelessWidget {
             ],
           ),
         ),
+        IconButton(
+          onPressed: (){
+            context.pushRoute(const NotificationListRoute());
+          },
+          icon: Icon(
+            FlutterRemix.notification_2_line,
+            size: 20.r,
+            color: Style.black,
+          ),
+        ),
+        /*
         Container(
           height: 32.h,
           width: 1.w,
@@ -130,6 +142,7 @@ class AppBarHome extends StatelessWidget {
           ),
         ),
         const Icon(Icons.keyboard_arrow_down_sharp)
+         */
       ],
     ));
   }

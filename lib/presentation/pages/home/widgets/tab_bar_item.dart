@@ -23,6 +23,53 @@ class CategoryBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         margin: EdgeInsets.only(bottom: 8.h,left: 4.w,right: 4.w),
+        height: 200,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(10.r)),
+            color: isActive ? Style.brandGreen : null),
+        child: InkWell(
+          onTap: onTap,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  CustomNetworkImage(
+                    url: image,
+                    height: 200,
+                    width: 1.sw * 1/3,
+                    radius: 8.r,
+                  ),
+                  Container(
+                    height: 200,
+                    width: 1.sw * 1/3,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                        color: Style.black.withOpacity(0.3)),
+                  ),
+                  Text(
+                    title,
+                    style: Style.interNormal(
+                      size: 13,
+                      color: Style.white,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
+/*
+Container(
+        margin: EdgeInsets.only(bottom: 8.h,left: 4.w,right: 4.w),
         width: 1.sw/4.8,
         height: 1.sw/4.8,
         decoration: BoxDecoration(
@@ -65,5 +112,4 @@ class CategoryBarItem extends StatelessWidget {
             ],
           ),
         ));
-  }
-}
+ */

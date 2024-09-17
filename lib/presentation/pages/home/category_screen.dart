@@ -40,7 +40,7 @@ class CategoryScreen extends StatelessWidget {
             ),
             16.verticalSpace,
             Container(
-                height: state.categories.isNotEmpty ? 1.sw/4.3 : 0,
+                height: state.categories.isNotEmpty ? 210 : 0,
                 margin: EdgeInsets.only(bottom: state.categories.isNotEmpty ? 26.h : 0),
                 child: SmartRefresher(
                   scrollDirection: Axis.horizontal,

@@ -163,21 +163,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       refreshController: _productController,
                     ),
                     24.verticalSpace,
-                    CategoryScreen(
-                      state: state,
-                      event: event,
-                      categoryController: _categoryController,
-                      restaurantController: _productController,
-                    ),
-                    state.isSelectCategoryLoading == -1
-                        ? const Loading()
-                        : state.isSelectCategoryLoading == 0
-                            ? _body(stateCart, state, context)
-                            : FilterCategoryProduct(
-                                stateCart: stateCart,
-                                state: state,
-                                event: event,
-                              ),
+                    _body(stateCart, state, context)
                   ],
                 ),
               ),
@@ -191,85 +177,447 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget _body(dynamic stateCart, HomeState state, BuildContext context) {
     return Column(
       children: [
-        state.story?.isNotEmpty ?? false
-            ? SizedBox(
-                height: 110.h,
-                child: SmartRefresher(
-                  controller: _storyController,
-                  scrollDirection: Axis.horizontal,
-                  enablePullDown: false,
-                  enablePullUp: true,
+        // state.story?.isNotEmpty ?? false
+        //     ? SizedBox(
+        //         height: 110.h,
+        //         child: SmartRefresher(
+        //           controller: _storyController,
+        //           scrollDirection: Axis.horizontal,
+        //           enablePullDown: false,
+        //           enablePullUp: true,
+        //           primary: false,
+        //           onLoading: () async {
+        //             await event.fetchStorePage(context, _storyController);
+        //           },
+        //           child: AnimationLimiter(
+        //             child: ListView.builder(
+        //               shrinkWrap: true,
+        //               primary: false,
+        //               scrollDirection: Axis.horizontal,
+        //               itemCount: state.story?.length ?? 0,
+        //               padding: EdgeInsets.only(left: 16.w),
+        //               itemBuilder: (context, index) =>
+        //                   AnimationConfiguration.staggeredList(
+        //                 position: index,
+        //                 duration: const Duration(milliseconds: 375),
+        //                 child: SlideAnimation(
+        //                   verticalOffset: 50.0,
+        //                   child: FadeInAnimation(
+        //                     child: ShopBarItem(
+        //                       index: index,
+        //                       controller: _storyController,
+        //                       story: state.story?[index]?.first,
+        //                     ),
+        //                   ),
+        //                 ),
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //       )
+        //     : const SizedBox.shrink(),
+        ///Restaurants
+        !state.isBranchesLoading ?
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TitleAndIcon(
+              title:
+              AppHelpers.getTranslation(TrKeys.restaurants),
+            ),
+            6.verticalSpace,
+            Container(
+              height: state.branches!.isNotEmpty ? 1.sw/3 : 0,
+              margin: EdgeInsets.only(bottom: 8.h,left: 6.w,right: 6.w),
+              child: SmartRefresher(
+                scrollDirection: Axis.horizontal,
+                enablePullDown: false,
+                enablePullUp: true,
+                primary: false,
+                controller: _restaurantController,
+                onLoading: () async {
+                  // await event.fetchCategoriesPage(context, _restaurantController);
+                },
+                child: ListView.builder(
+                  shrinkWrap: true,
                   primary: false,
-                  onLoading: () async {
-                    await event.fetchStorePage(context, _storyController);
-                  },
-                  child: AnimationLimiter(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      primary: false,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: state.story?.length ?? 0,
-                      padding: EdgeInsets.only(left: 16.w),
-                      itemBuilder: (context, index) =>
-                          AnimationConfiguration.staggeredList(
-                        position: index,
-                        duration: const Duration(milliseconds: 375),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: state.branches!.length,
+                  itemBuilder: (context, index) {
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      duration: const Duration(milliseconds: 375),
+                      child: Container(
+                        width: state.branches!.isNotEmpty ? 1.sw/3 : 0,
+                        height: state.branches!.isNotEmpty ? 1.sw/3 : 0,
+                        padding: EdgeInsets.all(4.sp),
                         child: SlideAnimation(
                           verticalOffset: 50.0,
                           child: FadeInAnimation(
-                            child: ShopBarItem(
-                              index: index,
-                              controller: _storyController,
-                              story: state.story?[index]?.first,
+                            child: InkWell(
+                              onTap: (){
+                                context.router.push(ShopRoute(shopId: state.branches![index].id!));
+                                // context.router.push(SingleShopRoute());
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      CustomNetworkImage(
+                                        url: state.branches![index].backgroundImg!,
+                                        height: 1.sw/3.3,
+                                        width: 1.sw/3.3,
+                                        radius: 8.r,
+                                      ),
+                                      Container(
+                                        height: 1.sw/3.3,
+                                        width: 1.sw/3.3,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                                            color: Style.black.withOpacity(0.3)),
+                                      ),
+                                      Text(
+                                        state.branches![index].translation?.title ?? "",
+                                        style: Style.interNormal(
+                                          size: 13,
+                                          color: Style.white,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.visible,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                                  /*
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 1.2,
+                                child: Container(
+                                  // padding: const EdgeInsets.all(8),
+                                  margin: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Style.white,
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Stack(
+                                        clipBehavior: Clip.none,
+                                        alignment: Alignment.bottomRight,
+                                        children: [
+                                          CustomNetworkImage(
+                                            url: state.branches![index].backgroundImg ?? '',
+                                            height: 120,
+                                            width: MediaQuery.of(context).size.width / 1.2,
+                                            radius: 8.r,
+                                          ),
+                                          Positioned(
+                                            bottom: -30,
+                                            right: 16,
+                                            child: Stack(
+                                              clipBehavior: Clip.none,
+                                              alignment: Alignment.bottomRight,
+                                              children: [
+                                                CustomNetworkImage(
+                                                  url: state.branches![index].logoImg ?? '',
+                                                  height: 60,
+                                                  width: 60,
+                                                  radius: 50.r,
+                                                  isWithBorder: true,
+                                                ),
+                                                Positioned(
+                                                  bottom: -1,
+                                                  right: 5,
+                                                  child: Container(
+                                                    width: 14,
+                                                    height: 14,
+                                                    decoration: BoxDecoration(
+                                                        color: Style.brandGreen,
+                                                        borderRadius: BorderRadius.circular(50.r)
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      6.verticalSpace,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 4),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.of(context).size.width / 1.7,
+                                              child: Text(
+                                                state.branches![index].translation?.title ??
+                                                    "",
+                                                style: Style.interNormal(
+                                                  size: 18,
+                                                  color: Style.black,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            Text(
+                                              state.branches![index].type ?? '',
+                                              style: Style.interNormal(
+                                                size: 12,
+                                                color: Style.textGrey,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            6.verticalSpace,
+                                            Text(
+                                              'Dessert',
+                                              style: Style.interNormal(
+                                                size: 14,
+                                                color: Style.brandGreen,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                                   */
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
-              )
-            : const SizedBox.shrink(),
-        16.verticalSpace,
-        state.isBannerLoading
-            ? const BannerShimmer()
-            : Container(
-                height: state.banners.isNotEmpty ? 200.h : 0,
-                margin: EdgeInsets.only(
-                    bottom: state.banners.isNotEmpty ? 30.h : 0),
-                child: SmartRefresher(
-                  scrollDirection: Axis.horizontal,
-                  enablePullDown: false,
-                  enablePullUp: true,
-                  primary: false,
-                  controller: _bannerController,
-                  onLoading: () async {
-                    await event.fetchBannerPage(context, _bannerController);
-                  },
-                  child: AnimationLimiter(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      primary: false,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: state.banners.length,
-                      padding: EdgeInsets.only(left: 16.w),
-                      itemBuilder: (context, index) =>
-                          AnimationConfiguration.staggeredList(
-                        position: index,
-                        duration: const Duration(milliseconds: 375),
-                        child: SlideAnimation(
-                          verticalOffset: 50.0,
-                          child: FadeInAnimation(
-                            child: BannerItem(
-                              banner: state.banners[index],
+              ),
+            ),
+          ],
+        )
+            : const SizedBox(),
+
+        ///Products Popular
+        state.productsPopular.isNotEmpty
+            ? Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TitleAndIcon(
+              title:
+              "${AppHelpers.getTranslation(TrKeys.popular)} ${AppHelpers.getTranslation(TrKeys.products)}",
+            ),
+            16.verticalSpace,
+            SizedBox(
+              height: 250.h,
+              child: SmartRefresher(
+                controller: _popularController,
+                scrollDirection: Axis.horizontal,
+                enablePullDown: false,
+                enablePullUp: true,
+                primary: false,
+                onLoading: () async {
+                  await event.fetchProductsPopularPage(
+                      context, _popularController);
+                },
+                child: AnimationLimiter(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    primary: false,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: state.productsPopular.length,
+                    padding: EdgeInsets.only(left: 16.w),
+                    itemBuilder: (context, index) =>
+                        AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 375),
+                          child: SlideAnimation(
+                            verticalOffset: 50.0,
+                            child: FadeInAnimation(
+                              child: GestureDetector(
+                                onTap: () {
+
+                                  AppHelpers.showCustomModalBottomDragSheet(
+                                    paddingTop: MediaQuery.of(context)
+                                        .padding
+                                        .top +
+                                        100.h,
+                                    context: context,
+                                    modal: (c) => ProductScreen(
+                                      data: state.productsPopular[index],
+                                      controller: c,
+                                    ),
+                                    isDarkMode: false,
+                                    isDrag: true,
+                                    radius: 16,
+                                  );
+                                },
+                                child: SizedBox(
+                                  width: 180.r,
+                                  child: ShopProductItem(
+                                    product: state.productsPopular[index],
+                                    count: LocalStorage.instance
+                                        .getCartLocal()
+                                        .firstWhere(
+                                            (element) =>
+                                        element.stockId ==
+                                            (state
+                                                .productsPopular[
+                                            index]
+                                                .stock
+                                                ?.id), orElse: () {
+                                      return CartLocalModel(
+                                          count: 0, stockId: 0);
+                                    }).count,
+                                    isAdd: (LocalStorage.instance
+                                        .getCartLocal()
+                                        .map((item) => item.stockId)
+                                        .contains(state
+                                        .productsPopular[index]
+                                        .stock
+                                        ?.id)),
+                                    addCount: () {
+                                      ref
+                                          .read(
+                                          shopOrderProvider.notifier)
+                                          .addCount(
+                                        context: context,
+                                        localIndex: LocalStorage
+                                            .instance
+                                            .getCartLocal()
+                                            .findIndex(state
+                                            .productsPopular[
+                                        index]
+                                            .stock
+                                            ?.id),
+                                      );
+                                    },
+                                    removeCount: () {
+                                      ref
+                                          .read(
+                                          shopOrderProvider.notifier)
+                                          .removeCount(
+                                        context: context,
+                                        localIndex: LocalStorage
+                                            .instance
+                                            .getCartLocal()
+                                            .findIndex(state
+                                            .productsPopular[
+                                        index]
+                                            .stock
+                                            ?.id),
+                                      );
+                                    },
+                                    addCart: () {
+                                      if (LocalStorage.instance
+                                          .getToken()
+                                          .isNotEmpty) {
+                                        ref
+                                            .read(shopOrderProvider
+                                            .notifier)
+                                            .addCart(
+                                            context,
+                                            state.productsPopular[
+                                            index]);
+                                        ref
+                                            .read(
+                                            productProvider.notifier)
+                                            .createCart(
+                                            context,
+                                            state
+                                                .productsPopular[
+                                            index]
+                                                .shopId ??
+                                                0, () {
+                                          ref
+                                              .read(shopOrderProvider
+                                              .notifier)
+                                              .getCart(context, () {});
+                                        },
+                                            product:
+                                            state.productsPopular[
+                                            index]);
+                                      } else {
+                                        context.pushRoute(
+                                            const LoginRoute());
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
                   ),
                 ),
               ),
+            ),
+          ],
+        )
+            : const SizedBox.shrink(),
+        12.verticalSpace,
+
+        ///Banner
+        state.isBannerLoading
+            ? const BannerShimmer() :
+        state.banners.isNotEmpty ?
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TitleAndIcon(
+                  title: AppHelpers.getTranslation(TrKeys.specialOffers),
+                ),
+                16.verticalSpace,
+                Container(
+                    height: state.banners.isNotEmpty ? 200.h : 0,
+                    margin: EdgeInsets.only(
+                        bottom: state.banners.isNotEmpty ? 30.h : 0),
+                    child: SmartRefresher(
+                      scrollDirection: Axis.horizontal,
+                      enablePullDown: false,
+                      enablePullUp: true,
+                      primary: false,
+                      controller: _bannerController,
+                      onLoading: () async {
+                        await event.fetchBannerPage(context, _bannerController);
+                      },
+                      child: AnimationLimiter(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          primary: false,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.banners.length,
+                          padding: EdgeInsets.only(left: 16.w),
+                          itemBuilder: (context, index) =>
+                              AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 375),
+                            child: SlideAnimation(
+                              verticalOffset: 50.0,
+                              child: FadeInAnimation(
+                                child: BannerItem(
+                                  banner: state.banners[index],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            )
+            : const SizedBox.shrink(),
+        ///Recipes
         Column(
           children: [
             state.recipesCategory.isNotEmpty
@@ -318,309 +666,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 : const SizedBox.shrink(),
             16.verticalSpace,
 
-            !state.isBranchesLoading ?
-            Column(
-              children: [
-                TitleAndIcon(
-                  title:
-                  AppHelpers.getTranslation(TrKeys.popular),
-                ),
-                Container(
-                  height: state.branches!.isNotEmpty ? 230 : 0,
-                  margin: EdgeInsets.only(bottom: state.categories.isNotEmpty ? 26.h : 0),
-                  child: SmartRefresher(
-                    scrollDirection: Axis.horizontal,
-                    enablePullDown: false,
-                    enablePullUp: true,
-                    primary: false,
-                    controller: _restaurantController,
-                    onLoading: () async {
-                      // await event.fetchCategoriesPage(context, _restaurantController);
-                    },
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      primary: false,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: state.branches!.length,
-                      itemBuilder: (context, index) {
-                        return AnimationConfiguration.staggeredList(
-                          position: index,
-                          duration: const Duration(milliseconds: 375),
-                          child: SlideAnimation(
-                            verticalOffset: 50.0,
-                            child: FadeInAnimation(
-                              child: InkWell(
-                                onTap: (){
-                                  context.router.push(ShopRoute(shopId: state.branches![index].id!));
-                                  // context.router.push(SingleShopRoute());
-                                },
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width / 1.2,
-                                  child: Container(
-                                    // padding: const EdgeInsets.all(8),
-                                    margin: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Style.white,
-                                      borderRadius: BorderRadius.circular(10.r),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Stack(
-                                          clipBehavior: Clip.none,
-                                          alignment: Alignment.bottomRight,
-                                          children: [
-                                            CustomNetworkImage(
-                                              url: state.branches![index].backgroundImg ?? '',
-                                              height: 120,
-                                              width: MediaQuery.of(context).size.width / 1.2,
-                                              radius: 8.r,
-                                            ),
-                                            Positioned(
-                                              bottom: -30,
-                                              right: 16,
-                                              child: Stack(
-                                                clipBehavior: Clip.none,
-                                                alignment: Alignment.bottomRight,
-                                                children: [
-                                                  CustomNetworkImage(
-                                                    url: state.branches![index].logoImg ?? '',
-                                                    height: 60,
-                                                    width: 60,
-                                                    radius: 50.r,
-                                                    isWithBorder: true,
-                                                  ),
-                                                  Positioned(
-                                                    bottom: -1,
-                                                    right: 5,
-                                                    child: Container(
-                                                      width: 14,
-                                                      height: 14,
-                                                      decoration: BoxDecoration(
-                                                        color: Style.brandGreen,
-                                                        borderRadius: BorderRadius.circular(50.r)
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        6.verticalSpace,
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 4),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                width: MediaQuery.of(context).size.width / 1.7,
-                                                child: Text(
-                                                  state.branches![index].translation?.title ??
-                                                      "",
-                                                  style: Style.interNormal(
-                                                    size: 18,
-                                                    color: Style.black,
-                                                  ),
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                              Text(
-                                                state.branches![index].type ?? '',
-                                                style: Style.interNormal(
-                                                  size: 12,
-                                                  color: Style.textGrey,
-                                                ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                              6.verticalSpace,
-                                              Text(
-                                                'Dessert',
-                                                style: Style.interNormal(
-                                                  size: 14,
-                                                  color: Style.brandGreen,
-                                                ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            )
-                : const SizedBox(),
 
-            16.verticalSpace,
-
-            state.productsPopular.isNotEmpty
-                ? Column(
-              children: [
-                TitleAndIcon(
-                  title:
-                  "${AppHelpers.getTranslation(TrKeys.popular)} ${AppHelpers.getTranslation(TrKeys.products)}",
-                ),
-                16.verticalSpace,
-                SizedBox(
-                  height: 250.h,
-                  child: SmartRefresher(
-                    controller: _popularController,
-                    scrollDirection: Axis.horizontal,
-                    enablePullDown: false,
-                    enablePullUp: true,
-                    primary: false,
-                    onLoading: () async {
-                      await event.fetchProductsPopularPage(
-                          context, _popularController);
-                    },
-                    child: AnimationLimiter(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        primary: false,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: state.productsPopular.length,
-                        padding: EdgeInsets.only(left: 16.w),
-                        itemBuilder: (context, index) =>
-                            AnimationConfiguration.staggeredList(
-                              position: index,
-                              duration: const Duration(milliseconds: 375),
-                              child: SlideAnimation(
-                                verticalOffset: 50.0,
-                                child: FadeInAnimation(
-                                  child: GestureDetector(
-                                    onTap: () {
-
-                                      AppHelpers.showCustomModalBottomDragSheet(
-                                        paddingTop: MediaQuery.of(context)
-                                            .padding
-                                            .top +
-                                            100.h,
-                                        context: context,
-                                        modal: (c) => ProductScreen(
-                                          data: state.productsPopular[index],
-                                          controller: c,
-                                        ),
-                                        isDarkMode: false,
-                                        isDrag: true,
-                                        radius: 16,
-                                      );
-                                    },
-                                    child: SizedBox(
-                                      width: 180.r,
-                                      child: ShopProductItem(
-                                        product: state.productsPopular[index],
-                                        count: LocalStorage.instance
-                                            .getCartLocal()
-                                            .firstWhere(
-                                                (element) =>
-                                            element.stockId ==
-                                                (state
-                                                    .productsPopular[
-                                                index]
-                                                    .stock
-                                                    ?.id), orElse: () {
-                                          return CartLocalModel(
-                                              count: 0, stockId: 0);
-                                        }).count,
-                                        isAdd: (LocalStorage.instance
-                                            .getCartLocal()
-                                            .map((item) => item.stockId)
-                                            .contains(state
-                                            .productsPopular[index]
-                                            .stock
-                                            ?.id)),
-                                        addCount: () {
-                                          ref
-                                              .read(
-                                              shopOrderProvider.notifier)
-                                              .addCount(
-                                            context: context,
-                                            localIndex: LocalStorage
-                                                .instance
-                                                .getCartLocal()
-                                                .findIndex(state
-                                                .productsPopular[
-                                            index]
-                                                .stock
-                                                ?.id),
-                                          );
-                                        },
-                                        removeCount: () {
-                                          ref
-                                              .read(
-                                              shopOrderProvider.notifier)
-                                              .removeCount(
-                                            context: context,
-                                            localIndex: LocalStorage
-                                                .instance
-                                                .getCartLocal()
-                                                .findIndex(state
-                                                .productsPopular[
-                                            index]
-                                                .stock
-                                                ?.id),
-                                          );
-                                        },
-                                        addCart: () {
-                                          if (LocalStorage.instance
-                                              .getToken()
-                                              .isNotEmpty) {
-                                            ref
-                                                .read(shopOrderProvider
-                                                .notifier)
-                                                .addCart(
-                                                context,
-                                                state.productsPopular[
-                                                index]);
-                                            ref
-                                                .read(
-                                                productProvider.notifier)
-                                                .createCart(
-                                                context,
-                                                state
-                                                    .productsPopular[
-                                                index]
-                                                    .shopId ??
-                                                    0, () {
-                                              ref
-                                                  .read(shopOrderProvider
-                                                  .notifier)
-                                                  .getCart(context, () {});
-                                            },
-                                                product:
-                                                state.productsPopular[
-                                                index]);
-                                          } else {
-                                            context.pushRoute(
-                                                const LoginRoute());
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-                : const SizedBox.shrink(),
 
             // ListView.builder(
             //   padding: EdgeInsets.zero,
@@ -636,6 +682,23 @@ class _HomePageState extends ConsumerState<HomePage> {
             //   },
             // ),
           ],
+        ),
+
+
+        CategoryScreen(
+          state: state,
+          event: event,
+          categoryController: _categoryController,
+          restaurantController: _productController,
+        ),
+        state.isSelectCategoryLoading == -1
+            ? const Loading()
+            : state.isSelectCategoryLoading == 0
+            ? const SizedBox()
+            : FilterCategoryProduct(
+          stateCart: stateCart,
+          state: state,
+          event: event,
         ),
       ],
     );

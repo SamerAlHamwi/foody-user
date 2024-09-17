@@ -18,7 +18,7 @@ class Style {
   static const Color dontHaveAccBtnBack = Color(0xFFF8F8F8);
   static const Color mainBack = Color(0xFFF4F4F4);
   static const Color borderColor = Color(0xFFE6E6E6);
-  static const Color brandGreen = Color(0xFFC41F2A);
+  static const Color brandGreen = Color(0xFFEF1F20);
   static const Color textGrey = Color(0xFF898989);
   static const Color recommendBg = Color(0xFFE8C7B0);
   static const Color bannerBg = Color(0xFFF3DED4);
