@@ -84,6 +84,18 @@ class ProductItem extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                          SizedBox(
+                            width: 200.h,
+                            child: Text(
+                               "Food restaurant",
+                              style: Style.interSemi(
+                                size: 12,
+                                color: Style.brandGreen,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                           Text(
                             product.translation?.description ?? "",
                             style: Style.interNormal(

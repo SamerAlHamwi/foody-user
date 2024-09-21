@@ -100,9 +100,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   ((MediaQuery.of(context).padding.top > 34)
                       ? 34.h
                       : MediaQuery.of(context).padding.top),
-              child: state.search.isEmpty
+              child:
+              state.search.isEmpty
                   ? _categoryAndSearchHistory(state, context)
-                  : _searchResultBody(context, state),
+                  :
+              _searchResultBody(context, state),
             )
           ],
         ),
@@ -143,58 +145,58 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         padding: EdgeInsets.zero,
         children: [
           16.verticalSpace,
-          ref.watch(homeProvider).isCategoryLoading
-              ? const SearchCategoryShimmer()
-              : ref.watch(homeProvider).categories.isNotEmpty
-                  ? Column(
-                      children: [
-                        SizedBox(
-                          height: 36.h,
-                          child: SmartRefresher(
-                            scrollDirection: Axis.horizontal,
-                            enablePullDown: false,
-                            primary: false,
-                            enablePullUp: true,
-                            controller: _categoryController,
-                            onLoading: () async {
-                              await ref
-                                  .read(homeProvider.notifier)
-                                  .fetchCategoriesPage(
-                                      context, _categoryController);
-                            },
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                primary: false,
-                                scrollDirection: Axis.horizontal,
-                                itemCount:
-                                    ref.watch(homeProvider).categories.length,
-                                padding: EdgeInsets.only(left: 16.w),
-                                itemBuilder: (context, index) {
-                                  return TabBarItem(
-                                    isShopTabBar: true,
-                                    title: ref
-                                            .watch(homeProvider)
-                                            .categories[index]
-                                            .translation
-                                            ?.title ??
-                                        "",
-                                    currentIndex: state.selectIndexCategory,
-                                    index: index,
-                                    onTap: () => event.setSelectCategory(
-                                        index, context,
-                                        categoryId: ref
-                                            .watch(homeProvider)
-                                            .categories[index]
-                                            .id),
-                                  );
-                                }),
-                          ),
-                        ),
-                        30.verticalSpace,
-                      ],
-                    )
-                  : const SizedBox.shrink(),
-          22.verticalSpace,
+          // ref.watch(homeProvider).isCategoryLoading
+          //     ? const SearchCategoryShimmer()
+          //     : ref.watch(homeProvider).categories.isNotEmpty
+          //         ? Column(
+          //             children: [
+          //               SizedBox(
+          //                 height: 36.h,
+          //                 child: SmartRefresher(
+          //                   scrollDirection: Axis.horizontal,
+          //                   enablePullDown: false,
+          //                   primary: false,
+          //                   enablePullUp: true,
+          //                   controller: _categoryController,
+          //                   onLoading: () async {
+          //                     await ref
+          //                         .read(homeProvider.notifier)
+          //                         .fetchCategoriesPage(
+          //                             context, _categoryController);
+          //                   },
+          //                   child: ListView.builder(
+          //                       shrinkWrap: true,
+          //                       primary: false,
+          //                       scrollDirection: Axis.horizontal,
+          //                       itemCount:
+          //                           ref.watch(homeProvider).categories.length,
+          //                       padding: EdgeInsets.only(left: 16.w),
+          //                       itemBuilder: (context, index) {
+          //                         return TabBarItem(
+          //                           isShopTabBar: true,
+          //                           title: ref
+          //                                   .watch(homeProvider)
+          //                                   .categories[index]
+          //                                   .translation
+          //                                   ?.title ??
+          //                               "",
+          //                           currentIndex: state.selectIndexCategory,
+          //                           index: index,
+          //                           onTap: () => event.setSelectCategory(
+          //                               index, context,
+          //                               categoryId: ref
+          //                                   .watch(homeProvider)
+          //                                   .categories[index]
+          //                                   .id),
+          //                         );
+          //                       }),
+          //                 ),
+          //               ),
+          //               30.verticalSpace,
+          //             ],
+          //           )
+          //         : const SizedBox.shrink(),
+          // 22.verticalSpace,
           state.isProductLoading
               ? const SearchProductShimmer()
               : Column(
@@ -243,69 +245,69 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       padding: EdgeInsets.only(bottom: 100.h),
       children: [
         16.verticalSpace,
-        ref.watch(homeProvider).isCategoryLoading
-            ? const SearchCategoryShimmer()
-            : ref.watch(homeProvider).categories.isNotEmpty
-                ? Column(
-                    children: [
-                      SizedBox(
-                        height: 36.h,
-                        child: SmartRefresher(
-                          scrollDirection: Axis.horizontal,
-                          enablePullDown: false,
-                          primary: false,
-                          enablePullUp: true,
-                          controller: _categoryControllerTwo,
-                          onLoading: () async {
-                            await ref
-                                .read(homeProvider.notifier)
-                                .fetchCategoriesPage(
-                                    context, _categoryControllerTwo);
-                          },
-                          child: AnimationLimiter(
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                primary: false,
-                                scrollDirection: Axis.horizontal,
-                                itemCount:
-                                    ref.watch(homeProvider).categories.length,
-                                padding: EdgeInsets.only(left: 16.w),
-                                itemBuilder: (context, index) {
-                                  return AnimationConfiguration.staggeredList(
-                                    position: index,
-                                    duration: const Duration(milliseconds: 375),
-                                    child: SlideAnimation(
-                                      verticalOffset: 50.0,
-                                      child: FadeInAnimation(
-                                        child: TabBarItem(
-                                          isShopTabBar: true,
-                                          title: ref
-                                                  .watch(homeProvider)
-                                                  .categories[index]
-                                                  .translation
-                                                  ?.title ??
-                                              "",
-                                          index: index,
-                                          currentIndex:
-                                              state.selectIndexCategory,
-                                          onTap: () => event.setSelectCategory(
-                                              index, context,
-                                              categoryId: ref
-                                                  .watch(homeProvider)
-                                                  .categories[index]
-                                                  .id),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }),
-                          ),
-                        ),
-                      ),
-                      30.verticalSpace,
-                    ],
-                  )
-                : const SizedBox.shrink(),
+        // ref.watch(homeProvider).isCategoryLoading
+        //     ? const SearchCategoryShimmer()
+        //     : ref.watch(homeProvider).categories.isNotEmpty
+        //         ? Column(
+        //             children: [
+        //               SizedBox(
+        //                 height: 36.h,
+        //                 child: SmartRefresher(
+        //                   scrollDirection: Axis.horizontal,
+        //                   enablePullDown: false,
+        //                   primary: false,
+        //                   enablePullUp: true,
+        //                   controller: _categoryControllerTwo,
+        //                   onLoading: () async {
+        //                     await ref
+        //                         .read(homeProvider.notifier)
+        //                         .fetchCategoriesPage(
+        //                             context, _categoryControllerTwo);
+        //                   },
+        //                   child: AnimationLimiter(
+        //                     child: ListView.builder(
+        //                         shrinkWrap: true,
+        //                         primary: false,
+        //                         scrollDirection: Axis.horizontal,
+        //                         itemCount:
+        //                             ref.watch(homeProvider).categories.length,
+        //                         padding: EdgeInsets.only(left: 16.w),
+        //                         itemBuilder: (context, index) {
+        //                           return AnimationConfiguration.staggeredList(
+        //                             position: index,
+        //                             duration: const Duration(milliseconds: 375),
+        //                             child: SlideAnimation(
+        //                               verticalOffset: 50.0,
+        //                               child: FadeInAnimation(
+        //                                 child: TabBarItem(
+        //                                   isShopTabBar: true,
+        //                                   title: ref
+        //                                           .watch(homeProvider)
+        //                                           .categories[index]
+        //                                           .translation
+        //                                           ?.title ??
+        //                                       "",
+        //                                   index: index,
+        //                                   currentIndex:
+        //                                       state.selectIndexCategory,
+        //                                   onTap: () => event.setSelectCategory(
+        //                                       index, context,
+        //                                       categoryId: ref
+        //                                           .watch(homeProvider)
+        //                                           .categories[index]
+        //                                           .id),
+        //                                 ),
+        //                               ),
+        //                             ),
+        //                           );
+        //                         }),
+        //                   ),
+        //                 ),
+        //               ),
+        //               30.verticalSpace,
+        //             ],
+        //           )
+        //         : const SizedBox.shrink(),
         TitleAndIcon(
           title: "Recently",
           rightTitle: "Clear",

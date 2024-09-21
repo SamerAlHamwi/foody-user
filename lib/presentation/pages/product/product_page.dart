@@ -26,6 +26,7 @@ import 'package:riverpodtemp/presentation/components/loading.dart';
 import 'package:riverpodtemp/presentation/components/title_icon.dart';
 import 'package:riverpodtemp/presentation/pages/product/widgets/w_ingredient.dart';
 import 'package:riverpodtemp/presentation/theme/theme.dart';
+import '../../components/text_fields/outline_bordered_text_field.dart';
 import '../shop/widgets/bonus_screen.dart';
 import 'widgets/p_main_button.dart';
 import 'widgets/w_product_extras.dart';
@@ -385,7 +386,22 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                         ],
                       ),
                     ),
+                    10.verticalSpace,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: OutlinedBorderTextField(
+                        label: AppHelpers.getTranslation(
+                            TrKeys.description)
+                            .toUpperCase(),
+                        onChanged: (value){
+                          print(value);
+                        },
+                        isError: false,
+                        // descriptionText: AppHelpers.getTranslation(TrKeys.description),
+                      ),
+                    ),
                     20.verticalSpace,
+
                     ProductMainButton(
                       state: state,
                       event: event,
