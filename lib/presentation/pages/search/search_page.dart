@@ -37,6 +37,16 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   late TextEditingController _searchController;
   final _delayed = Delayed(milliseconds: 700);
 
+
+  int selectedFilter = 0;
+
+  List<String> filters = [
+    'Lowest price',
+    'Highest price',
+    'Nearest',
+    'Top rated'
+  ];
+
   @override
   void initState() {
     _categoryController = RefreshController();
@@ -197,6 +207,45 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           //           )
           //         : const SizedBox.shrink(),
           // 22.verticalSpace,
+          Column(
+            children: [
+              SizedBox(
+                height: 36.h,
+                child: AnimationLimiter(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      primary: false,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: filters.length,
+                      padding: EdgeInsets.only(left: 16.w),
+                      itemBuilder: (context, index) {
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 375),
+                          child: SlideAnimation(
+                            verticalOffset: 50.0,
+                            child: FadeInAnimation(
+                              child: TabBarItem(
+                                isShopTabBar: true,
+                                title: filters[index],
+                                index: index,
+                                currentIndex: selectedFilter,
+                                onTap: (){
+                                  setState(() {
+                                    selectedFilter = index;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                ),
+              ),
+              30.verticalSpace,
+            ],
+          ),
+
           state.isProductLoading
               ? const SearchProductShimmer()
               : Column(
